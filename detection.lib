@@ -7,6 +7,12 @@
  */
 
 dt = library("detection.lib");
+ma = library("maths.lib");
+si = library("signals.lib");
+ro = library("routes.lib");
+an = library("analyzers.lib");
+ba = library("basics.lib");
+fi = library("filters.lib");
 
 // Averaging function based on a 1-pole lowpass filter and the T19 time
 // constant, that is, the system decays by 1/e^2.2 in "frame" seconds.

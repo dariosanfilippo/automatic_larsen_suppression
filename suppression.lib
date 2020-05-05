@@ -7,6 +7,11 @@
  */
  
 su = library("suppression.lib");
+ba = library("basics.lib");
+de = library("delays.lib");
+ma = library("maths.lib");
+si = library("signals.lib");
+fi = library("filters.lib");
 
 // 90-degree phase shift at cut-off
 allpass(cf, x) = fi.lowpass(1, cf1, x) - fi.highpass(1, cf1, x)
