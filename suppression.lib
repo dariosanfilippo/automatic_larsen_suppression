@@ -34,12 +34,15 @@ with {
                            ~ _);
 };
 
+// Fractional delay lines with delay in seconds
+fdl(del, x) = de.fdelaylti(4, 2^16, del * ma.SR, x);
+
 // Single-sideband modulation (frequency shifting)
 freq_shift(shift, x) = analytic(x) ,
                        osc_quad(shift) : si.cmul : _ ,
                                                    !;
 
-// Adding Faust's notch filter for clarity
+// Faust's notch filter for clarity
 notch(bw, cf, x) = fi.notchw(bw, cf, x);
 
 // Quadrature oscillator by Martin Vicanek
