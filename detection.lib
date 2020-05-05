@@ -12,6 +12,10 @@ dt = library("detection.lib");
 // constant, that is, the system decays by 1/e^2.2 in "frame" seconds.
 avg_t19(frame, x) = si.smooth(ba.tau2pole(frame / 2.2), x);
 
+// Bandpass filter bank with 6th-order elliptic filters on the 0-20kHz
+// range. N is the number of bands including DC and Nyquist.
+bpbank(N) = an.mth_octave_analyzer6e(1, 20000, N);
+
 // NAN-safe division
 div(x1, x2) = ba.if(x2 == 0, 0, x1 / x2);
 
