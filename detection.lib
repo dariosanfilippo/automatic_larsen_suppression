@@ -34,7 +34,8 @@ rms(frame, x) = x * x : avg_t19(frame) : sqrt;
 sc(N, frame, x) =  (   (_ , 
                        x) : xover(N) : ro.cross(2) : (rms(frame) - rms(frame)) :
                            div(_, rms(frame, x)) ^ 3 : integrator(1 / frame) ^ 2)
-                   ~ *(ma.SR / 2);
+                               * (ma.SR / 2)
+                       ~ _;
 
 // N-th-order Butterworth crossover. N must be known at compile-time.
 xover(N, cf, x) =  fi.lowpass(N, cf1, x) ,
