@@ -1,0 +1,58 @@
+/* This library contains filtering and modulation functions for the
+ * removal of Larsen tones.
+ *
+ * Copyright (c) 2019-2020, Dario Sanfilippo <sanfilippo.dario at gmail dot com> 
+ *
+ * All rights reserved.
+ */
+ 
+su = library("suppression.lib");
+
+// 90-degree phase shift at cut-off
+allpass(cf, x) = fi.lowpass(1, cf1, x) - fi.highpass(1, cf1, x)
+with {
+    cf1 = min(max(20, cf), ma.SR / 2 - 20);
+};
+
+// Analytic signal using a Hilbert transform approximation by Olli Niemitalo:
+// https://dsp.stackexchange.com/questions/37411/iir-hilbert-transformer/59157#59157
+analytic(x) =   real ,
+                imaginary
+with {
+    im_c = (   0.47944111608296202665,
+               0.87624358989504858020,
+               0.97660296916871658368,
+               0.99749940412203375040);
+    re_c = (   0.16177741706363166219,
+               0.73306690130335572242,
+               0.94536301966806279840,
+               0.99060051416704042460);
+    tf(c, y, x) = c * (x + y') - x'';
+    imaginary = x' : seq(i, 4,  tf(ba.take(i + 1, im_c))
+                               ~ _);
+    real = x : seq(i, 4,  tf(ba.take(i + 1, re_c))
+                           ~ _);
+};
+
+// Single-sideband modulation (frequency shifting)
+freq_shift(shift, x) = analytic(x) ,
+                       osc_quad(shift) : si.cmul : _ ,
+                                                   !;
+
+// Quadrature oscillator by Martin Vicanek
+osc_quad(f) =  tick
+               ~ ( _,
+                   _)
+with {
+      init = 1-1';
+      k1 = tan(ma.PI * f / ma.SR);
+      k2 = 2*k1/(1+k1*k1);
+      tick(u, v) = omega-k1*(v+k2*omega),
+                   v+k2*omega
+      with {
+       omega = (u+init)-k1*v;
+      };
+};
+
+// Invert phase at cut-off
+phase_invert(cf, x) = allpass(cf, x) : allpass(cf);
