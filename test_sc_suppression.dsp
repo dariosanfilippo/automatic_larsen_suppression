@@ -8,5 +8,5 @@ import("suppression.lib");
 
 response = .05; // in seconds
 in = os.osc(freq);
-freq = hslider("Freq[scale:exp]", 1000, 20, 20000, .001);
+freq = hslider("Freq", 1000, 20, 20000, .001);
 process = in : su.notch(1000, dt.sc(1, response, in));
