@@ -8,5 +8,5 @@ import("suppression.lib");
 
 response = .05; // in seconds
 on = checkbox("active");
-process(in) = (in : su.phase_invert(dt.sc(2, response, in)) + in) * on + in * (1 - on);
+process(in) = (in : su.phase_invert(dt.sc(2, response, in)) + in) / 2 * on + in * (1 - on);
 
