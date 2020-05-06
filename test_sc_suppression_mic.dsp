@@ -6,7 +6,12 @@ import("stdfaust.lib");
 import("detection.lib");
 import("suppression.lib");
 
-response = .05; // in seconds
+response = .1; // in seconds
 on = checkbox("active");
-process(in) = (in : su.phase_invert(dt.sc(2, response, in)) + in) / 2 * on + in * (1 - on);
+gain = hslider("gain", 1, 0, 64, .001);
+process(in) = (in1 : su.phase_invert(dt.sc(2, response, in1)) + in1) / 2 * 
+    on + in1 * (1 - on)
+with {
+    in1 = in * gain;
+};
 
