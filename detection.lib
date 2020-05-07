@@ -32,6 +32,12 @@ with {
       w(f) = 2 * ma.PI * f / ma.SR;
 };
 
+// signal inspector
+inspect(i, lower, upper) = _ <: attach(_ ,
+                                       _ : vbargraph("sig_%i [style:numerical]",
+                                                       lower,
+                                                       upper));
+
 // Root mean square. Averaging frame in seconds.
 rms(frame, x) = x * x : avg_t19(frame) : sqrt;
 
