@@ -39,6 +39,9 @@ with {
                            ~ _);
 };
 
+// BP with normalised output (unity gain at CF regardless of Q factor)
+bp_norm(cf, q, x) = svf2blti(cf, q, 1, x) : (! , ! , ! , _ , ! , ! , ! , ! , ! , !);
+
 // Fractional delay lines with delay in seconds
 fdl(del, x) = de.fdelaylti(4, 2^16, del * ma.SR, x);
 
