@@ -6,11 +6,13 @@ import("stdfaust.lib");
 import("detection.lib");
 import("suppression.lib");
 
-response = .1; // in seconds
 on = checkbox("active");
 gain = hslider("gain", 1, 0, 64, .001);
-process(in) = (in1 : su.notch(1000, dt.sc(2, response, in1))) * on + 
-    in1 * (1 - on)
+vol = hslider("vol", 1, 0, 1, .001);
+response = hslider("response", .1, .001, 1, .001); // in seconds
+spec_cent(in) = dt.sc(2, response, in) : dt.inspect(0, 0, 20000);
+process(in) = ((in1 : su.notch(1000, spec_cent(in1))) * on + 
+    in1 * (1 - on)) * vol
 with {
     in1 = in * gain;
 };

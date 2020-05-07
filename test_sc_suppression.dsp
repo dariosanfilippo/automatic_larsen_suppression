@@ -10,4 +10,5 @@ response = .05; // in seconds
 in = os.osc(freq);
 freq = hslider("Freq", 1000, 20, 20000, .001);
 on = checkbox("active");
-process = (in : su.notch(1000, dt.sc(2, response, in))) * on + in * (1 - on);
+spec_cent = dt.sc(2, response, in) : dt.inspect(0, 0, 20000);
+process = (in : su.notch(1000, spec_cent)) * on + in * (1 - on);
