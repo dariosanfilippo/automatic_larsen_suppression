@@ -13,6 +13,9 @@ ma = library("maths.lib");
 si = library("signals.lib");
 fi = library("filters.lib");
 
+// angular frequency
+w(f) = 2 * ma.PI * f / ma.SR;
+
 // 90-degree phase shift at cut-off
 allpass(cf, x) = fi.lowpass(1, cf1, x) - fi.highpass(1, cf1, x)
 with {
@@ -37,6 +40,27 @@ with {
                                ~ _);
     real = x : seq(i, 4,  tf(ba.take(i + 1, re_c))
                            ~ _);
+};
+
+// biquad section
+biquad(a0, a1, a2, b1, b2, x) = fir : + ~ iir
+with {
+      fir = a0*x+a1*x'+a2*x'';
+      iir(fb) = -b1*fb-b2*fb';
+};
+
+// biquad bandpass (design by Robert Bristow-Johnson)
+bpbi(cf, q, in) = biquad(a0, a1, a2, b1, b2, in)
+with {
+      cf1 = max(5, min(ma.SR / 2 - 5, cf));
+      q1 = max(q, .001);
+      alpha = sin(w(cf1))/(2*q1);
+      norm = 1+alpha;
+      a0 = alpha/norm;
+      a1 = 0;
+      a2 = -alpha/norm;
+      b1 = cos(w(cf1))*-2/norm;
+      b2 = (1-alpha)/norm;
 };
 
 // BP with normalised output (unity gain at CF regardless of Q factor)
@@ -90,7 +114,7 @@ svf2blti(cf, q, k, in) =   tick
                                        _)
 with {
     r = 1/2*(1/q);
-    g = m2.w(cf)/2;
+    g = w(cf)/2;
     tick(s1, s2) =  u1,
                     u2,
                     lp,
