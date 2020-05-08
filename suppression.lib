@@ -77,6 +77,10 @@ freq_shift(shift, x) = analytic(x) ,
 // Faust's notch filter for clarity
 notch(bw, cf, x) = fi.notchw(bw, cf, x);
 
+// 2nd-order SVF zero-delay fd notch
+notch2(cf, q, x) = bp_norm(cf, q, x) = svf2blti(cf, q, 1, x) : 
+      (! , ! , ! , ! , ! , ! , ! , _ , ! , !);
+
 // Quadrature oscillator by Martin Vicanek
 osc_quad(f) =  tick
                ~ ( _,
@@ -113,8 +117,9 @@ svf2blti(cf, q, k, in) =   tick
                                        _,
                                        _)
 with {
-    r = 1/2*(1/q);
-    g = w(cf)/2;
+    r = 1/(2*q);
+    wa = (2*ma.SR)*tan(w(cf)/2);
+    g = wa/ma.SR/2;
     tick(s1, s2) =  u1,
                     u2,
                     lp,
@@ -132,7 +137,7 @@ with {
         u2 = v2+lp;
         v1 = hp*g;
         v2 = bp*g;
-        hp = (in-s1*(2*r+g)-s2)/(1+2*r+g*g);
+        hp = (in-2*r*s1-g*s1-s2)/(1+2*r*g+g*g);
         bp = s1+v1;
         lp = s2+v2;
         bp_norm = bp*2*r;
@@ -144,4 +149,3 @@ with {
         peak = lp-hp;
     };
 };
-
