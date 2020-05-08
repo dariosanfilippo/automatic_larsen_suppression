@@ -49,6 +49,16 @@ sc(N, frame, x) =  (   (_ ,
                                * (ma.SR / 2)
                        ~ _;
 
+// Amplitude-dependent spectral centroid through N-th-order recursive adaptive 
+// filtering: it remembers the last significant SC calculation. 
+// Analysis frame in seconds.
+sc_mem(N, frame, x) =  ((  _ , 
+                           x) : xover(N) : ro.cross(2) : 
+                               (rms(frame) - rms(frame)) : 
+                                   integrator(1 / frame) ^ 2)
+                                       * (ma.SR / 2)
+                       ~ _;
+
 // N-th-order Butterworth crossover. N must be known at compile-time.
 xover(N, cf, x) =  fi.lowpass(N, cf1, x) ,
                    fi.highpass(N, cf1, x)
