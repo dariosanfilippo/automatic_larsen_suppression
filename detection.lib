@@ -32,32 +32,18 @@ with {
       w(f) = 2 * ma.PI * f / ma.SR;
 };
 
-// signal inspector
-inspect(i, lower, upper) = _ <: attach(_ ,
-                                       _ : vbargraph("sig_%i [style:numerical]",
-                                                       lower,
-                                                       upper));
-
 // Root mean square. Averaging frame in seconds.
 rms(frame, x) = x * x : avg_t19(frame) : sqrt;
 
 // Spectral centroid through N-th-order recursive adaptive filtering. Analysis 
-// frame in seconds.
-sc(N, frame, x) =  (   (_ , 
-                       x) : xover(N) : ro.cross(2) : (rms(frame) - rms(frame)) :
-                           div(_, rms(frame, x)) ^ 3 : integrator(1 / frame) ^ 2)
-                               * (ma.SR / 2)
-                       ~ _;
-
-// Amplitude-dependent spectral centroid through N-th-order recursive adaptive 
-// filtering: it remembers the last significant SC calculation. 
-// Analysis frame in seconds.
-sc_mem(N, frame, x) =  ((  _ , 
-                           x) : xover(N) : ro.cross(2) : 
-                               (rms(frame) - rms(frame)) : 
-                                   integrator(1 / frame) ^ 2)
-                                       * (ma.SR / 2)
-                       ~ _;
+// frame in seconds. "Denorm" makes it amplitude independent, so the
+// last SC calculation is kept when a signal is followed by (quiet) background
+// noise.
+sc(N, denorm, frame, x) =  ( ( _ , 
+                               x) : xover(N) : ro.cross(2) : 
+      (rms(frame) - rms(frame)) : div(_, ba.if(denorm, 1, rms(frame, x))) ^ 3 : 
+       integrator(1 / frame) ^ 2) * (ma.SR / 2)
+                               ~ _;
 
 // N-th-order Butterworth crossover. N must be known at compile-time.
 xover(N, cf, x) =  fi.lowpass(N, cf1, x) ,
