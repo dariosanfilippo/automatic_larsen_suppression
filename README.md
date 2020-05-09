@@ -1,2 +1,5 @@
 # fb_suppression
-Currently a testing repository for Larsen suppression algorithms written in Faust.
+ALS - Automatic Larsen Suppression algorithms implementing adaptive filtering
+and adaptive ferquency shifting.
+
+Copyright (C) 2020 Dario Sanfilippo <sanfilippo.dario@gmail.com>.
