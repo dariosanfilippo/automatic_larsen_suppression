@@ -101,7 +101,8 @@ phase_invert(cf, x) = allpass(cf, x) : allpass(cf);
 
 // 2p2z state-variable filter with zero-delay feedback topology
 // inputs are cutoff, Q, shelving boost (linear amp.), input signal
-// outputs are LP, HP, BP, BP_normalised, LS, HS, BS, notch, peak, AP
+// outputs are LP, HP, BP, BP_normalised, LS, HS, BS, notch, peak, AP.
+// Ref.: Zavalishin; Pirkle.
 svf2blti(cf, q, k, in) =   tick
                            ~ ( _,
                                _) : (  !,
