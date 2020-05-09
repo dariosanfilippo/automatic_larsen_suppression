@@ -78,7 +78,7 @@ freq_shift(shift, x) = analytic(x) ,
 notch(bw, cf, x) = fi.notchw(bw, cf, x);
 
 // 2nd-order SVF zero-delay fd notch
-notch2(cf, q, x) = bp_norm(cf, q, x) = svf2blti(cf, q, 1, x) : 
+notch2(cf, q, x) = svf2blti(cf, q, 1, x) : 
       (! , ! , ! , ! , ! , ! , ! , _ , ! , !);
 
 // Quadrature oscillator by Martin Vicanek
